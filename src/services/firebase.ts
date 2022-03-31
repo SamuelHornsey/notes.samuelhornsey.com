@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   connectAuthEmulator,
 } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,6 +27,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 export const auth = getAuth(app);
+export const db = getFirestore();
+
+if (process.env.NODE_ENV != 'production') {
+  console.warn('ENABLING EMULATOR');
+  connectAuthEmulator(auth, 'http://localhost:9099');
+  connectFirestoreEmulator(db, 'localhost', 8081);
+}
 
 export const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 
 import UserContext from "./services/user";
@@ -9,6 +9,11 @@ import Guarded from "./routes/guarded";
 import Login from "./routes/login";
 import Home from "./routes/home";
 import Edit from "./routes/edit";
+import About from "./routes/about";
+
+// Components
+import Footer from "./components/footer";
+import Nav from "./components/nav";
 
 import "./App.css";
 
@@ -29,18 +34,18 @@ function App() {
     <UserContext.Provider value={user}>
       <div className="App">
         <BrowserRouter>
+          <Nav></Nav>
           <Routes>
             <Route path="/" element={<Guarded component={Home}></Guarded>} />
             <Route
-              path="/edit"
+              path="/edit/:uuid"
               element={<Guarded component={Edit}></Guarded>}
             />
+            <Route path="/what-the-hell-is-this" element={<Guarded component={About}></Guarded>} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </BrowserRouter>
-        <nav>
-          <ul></ul>
-        </nav>
+        <Footer />
       </div>
     </UserContext.Provider>
   );

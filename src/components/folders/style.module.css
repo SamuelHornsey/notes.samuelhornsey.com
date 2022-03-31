@@ -1,0 +1,32 @@
+
+.controls {
+  width: 540px;
+  border: 7px solid #000000;
+  box-sizing: border-box;
+  display: flex;
+  padding: 20px 30px;
+  align-items: center;
+  background-color: #f8f8f8;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 26px;
+  color: #000000;
+}
+
+.new {
+  margin-left: auto;
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 26px;
+  color: #000000;
+  text-decoration: none;
+}
+
+.new:hover {
+  color: #0000EE;
+}

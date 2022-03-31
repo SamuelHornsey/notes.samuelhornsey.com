@@ -1,17 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import { signOut } from 'firebase/auth';
-import { auth } from "../../services/firebase";
+import Folders from "../../components/folders";
+
+import style from "./style.module.css";
 
 function Home() {
-  const logout = () => {
-    signOut(auth)
-  }
   return (
-    <div>
-      Home
-
-      <button onClick={logout}>Logout</button>
+    <div className={style.home}>
+      <div className={style.container}>
+        <Folders />
+      </div>
     </div>
   )
 }
