@@ -48,24 +48,3 @@
 .bold {
   font-weight: 700;
 }
-
-.button {
-  font-family: "Roboto Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 21px;
-  color: #000000;
-  background: #ffffff;
-  border: 5px solid #000000;
-  box-sizing: border-box;
-  width: 116px;
-  height: 48px;
-  margin: 4px;
-  cursor: pointer;
-}
-
-.button:hover {
-  color: #fff;
-  background: #000;
-}

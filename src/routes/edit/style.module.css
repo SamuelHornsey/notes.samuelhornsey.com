@@ -1,0 +1,53 @@
+.edit {
+}
+
+.container {
+  width: 1000px;
+  margin: auto;
+}
+
+.buttons {
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  border: 1px solid #989898;
+  box-sizing: border-box;
+  width: 1000px;
+  min-height: 780px;
+  margin: 0px 4px;
+  padding: 35px;
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #000000;
+}
+
+.textarea::placeholder {
+  font-style: italic;
+  color: #7b7b7b;
+}
+
+.preview {
+  box-sizing: border-box;
+  font-family: "Roboto Mono";
+  border: 1px solid #989898;
+  padding: 0px 35px;
+  min-height: 780px;
+  margin: 0px 4px;
+}
+
+.saved {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  color: #0000ee;
+  margin-left: auto;
+  opacity: 1;
+  transition: opacity 1s linear;
+}

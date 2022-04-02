@@ -33,6 +33,7 @@ export default function Nav() {
           <a
             className={style.link}
             target="_blank"
+            rel="noreferrer"
             href="https://github.com/SamuelHornsey/brutalist-notes"
           >
             Github.

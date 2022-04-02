@@ -1,0 +1,23 @@
+.notes {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #000000;
+  margin-left: 40px;
+}
+
+.new {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #8d8d8d;
+  text-decoration: none;
+  display: block;
+  border: none;
+  background: none;
+  padding: 0px;
+  font-family: 'Roboto Mono', monospace;
+  cursor: text;
+  margin: 28px 0px;
+}

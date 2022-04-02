@@ -3,9 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
   getAuth,
-  GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
-  connectAuthEmulator,
+  connectAuthEmulator
 } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
 // TODO: Add SDKs for Firebase products that you want to use
@@ -25,17 +25,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore();
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.REACT_APP_DISABLE_EMULATOR !== 'true') {
   console.warn('ENABLING EMULATOR');
   connectAuthEmulator(auth, 'http://localhost:9099');
   connectFirestoreEmulator(db, 'localhost', 8081);
 }
 
-export const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+export const provider = new GithubAuthProvider();
 
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
+export const signInWithGithub = () => signInWithPopup(auth, provider);
