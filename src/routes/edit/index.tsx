@@ -1,46 +1,31 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { updateDoc, getDoc, doc } from "firebase/firestore";
-import { marked } from "marked";
+import debounce from 'lodash.debounce';
 
+// Components
 import Button from "../../components/button";
+import Markdown from "../../components/markdown";
+import Editor from "../../components/editor";
 
+// Services
 import UserContext from "../../services/user";
 import { db } from "../../services/firebase";
 
+// Styles
 import style from "./style.module.css";
 
 function Edit() {
+  // TODO: use reducer
   const params = useParams();
   const user = useContext(UserContext);
   const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<boolean>(false);
-
-  const debounceHandler = (func: Function) => {
-    let timer: ReturnType<typeof setTimeout> | null;
-
-    return (...args: any) => {
-      if (timer) clearTimeout(timer);
-
-      timer = setTimeout(() => {
-        timer = null;
-        func.apply(func, args);
-      }, 3000);
-    };
-  };
-
-  const save = (value: string) => {
-    const { uid } = { ...user };
-    updateDoc(
-      doc(db, `/notes/${uid}/folders/${params.folder}/notes/${params.note}`),
-      { content: value }
-    );
-  };
-
-  const debounce = useCallback(debounceHandler(save), []);
+  const [saved, setSaved] = useState<boolean>(false);
 
   useEffect(() => {
-    const loadNotes = async () => {
+    // Load note doc
+    const loadNote = async () => {
       const { uid } = { ...user };
       const note = await getDoc(
         doc(db, `/notes/${uid}/folders/${params.folder}/notes/${params.note}`)
@@ -48,26 +33,34 @@ function Edit() {
 
       const data = note.data();
 
-      if (!data) {
-        return;
-      }
+      if (!data) return;
 
       setContent(data.content);
     };
 
-    loadNotes();
+    // Note note
+    loadNote();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      save(content);
-    };
-  });
+  // Save note to db
+  const save = (value: string) => {
+    const { uid } = { ...user };
+    updateDoc(
+      doc(db, `/notes/${uid}/folders/${params.folder}/notes/${params.note}`),
+      { content: value }
+    );
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-    debounce(e.target.value);
+    setSaved(true);
+
+    setTimeout(() => {
+      setSaved(false);
+    }, 2000);
   };
+
+  const debounceSave = useCallback(
+    debounce((value) => save(value), 500),
+    []
+  );
 
   const togglePreview = () => {
     setPreview(true);
@@ -77,6 +70,11 @@ function Edit() {
     setPreview(false);
   };
 
+  const onChange = (value: string) => {
+    setContent(value);
+    debounceSave(value);
+  };
+
   return (
     <div className={style.edit}>
       <div className={style.container}>
@@ -84,20 +82,12 @@ function Edit() {
           <Button text="Edit" onClick={toggleEdit} />
           <Button text="PREVIEW" onClick={togglePreview} />
 
-          <span className={style.saved}>Saved!... ✓</span>
+          <span className={saved ? `${style.saved} ${style.show}` : style.saved}>Saved!... ✓</span>
         </div>
         {preview ? (
-          <div
-            className={style.preview}
-            dangerouslySetInnerHTML={{ __html: marked.parse(content) }}
-          ></div>
+          <Markdown content={content} />
         ) : (
-          <textarea
-            placeholder="Your text here..."
-            className={style.textarea}
-            onChange={onChange}
-            value={content}
-          ></textarea>
+          <Editor content={content} onChange={onChange} />
         )}
       </div>
     </div>

@@ -38,7 +38,8 @@ export default function Notes(props: Props) {
   useEffect(() => {
     const { uid } = { ...user };
 
-    const loadDocs = async () => {
+    // load inital notes
+    const loadNotes = async () => {
       const notes: Array<IfcNote> = [];
       const docs = await getDocs(
         query(
@@ -60,7 +61,8 @@ export default function Notes(props: Props) {
       setNotes(notes);
     };
 
-    onSnapshot(
+    // Subscribe to updates
+    const unsubscribe = onSnapshot(
       query(
         collection(db, `notes/${uid}/folders/${props.folder}/notes`),
         orderBy("timestamp")
@@ -82,7 +84,10 @@ export default function Notes(props: Props) {
       }
     );
 
-    loadDocs();
+    loadNotes();
+
+    // Unsubscribe from events
+    return unsubscribe;
   }, []);
 
   const saveNote = async (value: string) => {

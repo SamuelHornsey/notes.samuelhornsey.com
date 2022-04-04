@@ -48,7 +48,7 @@ export default function Folders() {
     };
 
     // Subscribe to updates to list of folders
-    onSnapshot(
+    const unsubscribe = onSnapshot(
       query(collection(db, `notes/${uid}/folders`), orderBy("timestamp")),
       (docs) => {
         const folders: Array<IfcFolder> = [];
@@ -68,6 +68,8 @@ export default function Folders() {
 
     // Run load notes
     loadNotes();
+
+    return unsubscribe;
   }, [user]);
 
   // Toggle open folder
