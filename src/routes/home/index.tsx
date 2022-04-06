@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 import Modal from "../../components/modal";
-import Controls from "../../components/controls";
+import Header from "../../components/header";
 import Folders from "../../components/folders";
 
 import { db } from "../../services/firebase";
@@ -30,7 +30,7 @@ function Home() {
     <div className={style.home}>
       <div className={style.container}>
         {modal ? <Modal toggle={toggle} onSubmit={onSubmit} /> : null}
-        <Controls onNew={toggle} />
+        <Header onNew={toggle} />
         <Folders />
       </div>
     </div>

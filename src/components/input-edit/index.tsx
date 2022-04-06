@@ -6,11 +6,13 @@ import style from "./style.module.css";
 // Props types
 interface Props {
   onSubmit: Function;
+  value: string;
+  placeholder?: string; 
 }
 
 export default function InputEdit(props: Props) {
   const input = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>(props.value);
   
   /**
    * When user removes focus from
@@ -43,6 +45,7 @@ export default function InputEdit(props: Props) {
       onBlur={onBlur}
       onChange={onChange}
       onKeyUp={onKeyUp}
+      placeholder={props.placeholder}
     ></input>
   );
 }

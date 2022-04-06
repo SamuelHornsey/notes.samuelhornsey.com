@@ -1,25 +1,40 @@
 import React from "react";
 
-// Styles
+import edit from "../../assets/edit.png";
+import trash from "../../assets/trash.png";
+
 import style from "./style.module.css";
 
-// Props types
 interface Props {
-  onNew: Function
+  show: boolean;
+  onDelete: Function;
+  onEdit: Function;
 }
 
 export default function Controls(props: Props) {
-  // Run on new handler
-  const onClick = () => {
-    props.onNew();
+  const onDelete = () => {
+    props.onDelete();
   }
-  
+
+  const onEdit = () => {
+    props.onEdit();
+  }
+
   return (
-    <div className={style.controls}>
-      <div className={style.title}>My Folders</div>
-      <button className={style.new} onClick={onClick}>
-        NEW...!
+    <>
+      <button
+        className={props.show ? `${style.button} ${style.show}` : style.button}
+        onClick={onEdit}
+      >
+        <img className={style.edit} src={edit}></img>
       </button>
-    </div>
+
+      <button
+        className={props.show ? `${style.button} ${style.show}` : style.button}
+        onClick={onDelete}
+      >
+        <img className={style.edit} src={trash}></img>
+      </button>
+    </>
   );
 }

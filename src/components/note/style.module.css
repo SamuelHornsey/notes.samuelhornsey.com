@@ -1,6 +1,8 @@
 .note {
   margin: 28px 0px;
-  display: block;
+}
+
+.link {
   font-weight: 400;
   font-size: 16px;
   line-height: 21px;
@@ -13,7 +15,6 @@
   cursor: pointer;
 }
 
-.note:hover {
+.link:hover {
   color: rgb(121, 0, 177);
 }
-

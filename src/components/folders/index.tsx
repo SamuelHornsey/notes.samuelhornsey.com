@@ -83,16 +83,20 @@ export default function Folders() {
 
   return (
     <div className={style.folders}>
-      {folders.map((folder, i) => (
-        <Folder
-          uuid={folder.uuid}
-          index={i}
-          key={i}
-          name={folder.name}
-          open={index === i ? true : false}
-          onClick={toggle}
-        />
-      ))}
+      {folders.length > 0 ? (
+        folders.map((folder, i) => (
+          <Folder
+            uuid={folder.uuid}
+            index={i}
+            key={i}
+            name={folder.name}
+            open={index === i ? true : false}
+            onClick={toggle}
+          />
+        ))
+      ) : (
+        <h4 className={style.empty}>There are no notes here...</h4>
+      )}
     </div>
   );
 }
