@@ -12,7 +12,7 @@ interface Props {
   onSubmit: Function;
 }
 
-export default function Modal(props: Props) {
+export default function Modal({ toggle, onSubmit }: Props) {
   const [value, setValue] = useState<string>("");
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function Modal(props: Props) {
       }
 
       if (e.key === 'Enter') {
-        props.onSubmit(value);
+        onSubmit(value);
         toggle();
       }
     };
@@ -35,11 +35,11 @@ export default function Modal(props: Props) {
     return () => {
       window.removeEventListener("keyup", handler);
     };
-  }, [value]);
+  }, [value, toggle, onSubmit]);
 
   // toggle handler
-  const toggle = () => {
-    props.toggle();
+  const toggleHandler = () => {
+    toggle();
   };
 
   // on text field change
@@ -49,7 +49,7 @@ export default function Modal(props: Props) {
 
   // handle submit
   const onClick = () => {
-    props.onSubmit(value);
+    onSubmit(value);
   };
 
   return (
@@ -65,7 +65,7 @@ export default function Modal(props: Props) {
         </div>
         <div className={style.buttons}>
           <Button onClick={onClick} text={"submit."}></Button>
-          <Button onClick={toggle} text={"LEAVE!"}></Button>
+          <Button onClick={toggleHandler} text={"LEAVE!"}></Button>
         </div>
       </div>
     </div>
