@@ -1,29 +1,29 @@
 import React, { useState, useContext } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
+// Components
 import Modal from "../../components/modal";
 import Header from "../../components/header";
 import Folders from "../../components/folders";
 
-import { db } from "../../services/firebase";
+// Services
+import { IfcUser } from "../../types/interfaces";
 import UserContext from "../../services/user";
+import { createFolder } from "../../services/folders";
 
+// Styles
 import style from "./style.module.css";
 
 function Home() {
-  const user = useContext(UserContext);
+  const user = useContext(UserContext) as IfcUser;
   const [modal, setModal] = useState<boolean>(false);
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  const onSubmit = (value: string) => {
-    const { uid } = { ...user };
-    addDoc(collection(db, `notes/${uid}/folders/`), {
-      name: value,
-      timestamp: serverTimestamp(),
-    }).then(() => setModal(false));
+  const onSubmit = (name: string) => {
+    createFolder(`notes/${user.uid}/folders/`, { name })
+      .then(() => setModal(false));
   };
 
   return (

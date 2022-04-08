@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import { deleteDoc, doc } from "firebase/firestore";
 
 // Components
 import Note from "../note";
 import InputEdit from "../input-edit";
 
 // Types
-import { IfcNote } from "../../types/interfaces";
+import { IfcNote, IfcUser } from "../../types/interfaces";
 
 // Services
 import UserContext from "../../services/user";
-import { subscribeNotes, createNote, deletNote, updateNote } from "../../services/notes";
+import {
+  subscribeNotes,
+  createNote,
+  deleteNote,
+  updateNote,
+} from "../../services/notes";
 
 // Styles
 import style from "./style.module.css";
@@ -23,24 +27,21 @@ export default function Notes(props: Props) {
   /**
    * @TODO useReducer
    */
-  const user = useContext(UserContext);
+  const user = useContext(UserContext) as IfcUser;
   const [notes, setNotes] = useState<Array<IfcNote>>([]);
   const [edit, setEdit] = useState<boolean>(false);
   const [index, setIndex] = useState<number | null>();
 
   useEffect(() => {
-    if (!user) return;
-
     const unsubscribe = subscribeNotes(
-      user.uid,
-      props.folder,
+      `notes/${user.uid}/folders/${props.folder}/notes`,
       (notes: Array<IfcNote>) => {
         setNotes(notes);
       }
     );
 
     return unsubscribe;
-  }, []);
+  }, [user.uid, props.folder]);
 
   const saveNote = (name: string) => {
     if (name === "") {
@@ -48,15 +49,13 @@ export default function Notes(props: Props) {
       return;
     }
 
-    if (!user) return;
-
-    createNote(user.uid, props.folder, { name }).then(() => setEdit(false));
+    createNote(`notes/${user.uid}/folders/${props.folder}/notes`, {
+      name,
+    }).then(() => setEdit(false));
   };
 
-  const deleteNote = (id: string) => {
-    if (!user) return;
-
-    deletNote(user.uid, props.folder, id);
+  const delNote = (id: string) => {
+    deleteNote(`notes/${user.uid}/folders/${props.folder}/notes/${id}`);
   };
 
   const onClick = () => {
@@ -68,13 +67,15 @@ export default function Notes(props: Props) {
   };
 
   const onUpdate = (name: string) => {
-    if (index == null || !user) {
+    if (index == null) {
       setIndex(null);
       return;
     }
 
-    updateNote(user.uid, props.folder, notes[index].uuid, { name })
-      .then(() => setIndex(null));
+    updateNote(
+      `/notes/${user.uid}/folders/${props.folder}/notes/${notes[index].uuid}`,
+      { name }
+    ).then(() => setIndex(null));
   };
 
   return (
@@ -86,7 +87,7 @@ export default function Notes(props: Props) {
           <Note
             key={i}
             index={i}
-            deleteNote={deleteNote}
+            deleteNote={delNote}
             editNote={editNote}
             uuid={note.uuid}
             name={note.name}
@@ -96,7 +97,11 @@ export default function Notes(props: Props) {
       )}
 
       {edit ? (
-        <InputEdit value={""} placeholder={"New Note Name"} onSubmit={saveNote} />
+        <InputEdit
+          value={""}
+          placeholder={"New Note Name"}
+          onSubmit={saveNote}
+        />
       ) : (
         <button onClick={onClick} className={style.new}>
           New...

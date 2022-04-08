@@ -1,99 +1,79 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  getDocs,
-  collection,
-  query,
-  onSnapshot,
-  orderBy,
-} from "firebase/firestore";
 
 // Components
+import InputEdit from "../input-edit";
 import Folder from "../folder";
 
 // Types
-import { IfcFolder } from "../../types/interfaces";
+import { IfcFolder, IfcUser } from "../../types/interfaces";
 
 // Services
-import { db } from "../../services/firebase";
 import UserContext from "../../services/user";
+import { subscribeFolders, deleteFolder, updateFolder } from "../../services/folders";
 
 // Styles
 import style from "./style.module.css";
 
 export default function Folders() {
-  const user = useContext(UserContext);
+  const user = useContext(UserContext) as IfcUser;
   const [folders, setFolders] = useState<Array<IfcFolder>>([]);
-  const [index, setIndex] = useState<number | null>(null);
+  const [open, setOpen] = useState<number | null>(null);
+  const [index, setIndex] = useState<number | null>();
 
   useEffect(() => {
-    const { uid } = { ...user };
-
-    // Load initial folders
-    const loadNotes = async () => {
-      const folders: Array<IfcFolder> = [];
-      const docs = await getDocs(
-        query(collection(db, `notes/${uid}/folders`), orderBy("timestamp"))
-      );
-
-      docs.forEach((doc) => {
-        const { name, timestamp } = doc.data();
-        folders.push({
-          uuid: doc.id,
-          timestamp,
-          name,
-        });
-      });
-
-      setFolders(folders);
-    };
-
-    // Subscribe to updates to list of folders
-    const unsubscribe = onSnapshot(
-      query(collection(db, `notes/${uid}/folders`), orderBy("timestamp")),
-      (docs) => {
-        const folders: Array<IfcFolder> = [];
-
-        docs.forEach((doc) => {
-          const { name, timestamp } = doc.data();
-          folders.push({
-            uuid: doc.id,
-            timestamp: timestamp,
-            name,
-          });
-        });
-
+    const unsubscribe = subscribeFolders(
+      `notes/${user.uid}/folders`,
+      (folders: Array<IfcFolder>) => {
         setFolders(folders);
       }
     );
-
-    // Run load notes
-    loadNotes();
 
     return unsubscribe;
   }, [user]);
 
   // Toggle open folder
   const toggle = (i: number) => {
-    if (i === index) {
-      setIndex(null);
+    if (i === open) {
+      setOpen(null);
     } else {
-      setIndex(i);
+      setOpen(i);
     }
+  };
+
+  const onEdit = (index: number) => {
+    setIndex(index);
+  };
+
+  const onDelete = (id: string) => {
+    deleteFolder(`notes/${user.uid}/folders/${id}`);
+  };
+
+  const onUpdate = (name: string) => {
+    if (!index) return;
+
+    updateFolder(`notes/${user.uid}/folders/${folders[index].uuid}`, { name })
+      .then(() => setIndex(null));
   };
 
   return (
     <div className={style.folders}>
       {folders.length > 0 ? (
-        folders.map((folder, i) => (
-          <Folder
-            uuid={folder.uuid}
-            index={i}
-            key={i}
-            name={folder.name}
-            open={index === i ? true : false}
-            onClick={toggle}
-          />
-        ))
+        folders.map((folder, i) =>
+          i === index ? (
+            <InputEdit key={i} onSubmit={onUpdate} value={folder.name} />
+          ) : (
+            <Folder
+              uuid={folder.uuid}
+              index={i}
+              key={i}
+              name={folder.name}
+              open={open === i ? true : false}
+              onClick={toggle}
+              deleteFolder={onDelete}
+              editFolder={onEdit}
+            />
+          )
+        )
       ) : (
         <h4 className={style.empty}>There are no notes here...</h4>
       )}

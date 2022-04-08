@@ -14,3 +14,7 @@ export interface IfcNote {
 export interface IfcNoteContent extends IfcNote {
   content: string;
 }
+
+export interface IfcUser {
+  uid: string;
+}

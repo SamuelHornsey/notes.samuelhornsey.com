@@ -26,14 +26,14 @@ export default function Controls(props: Props) {
         className={props.show ? `${style.button} ${style.show}` : style.button}
         onClick={onEdit}
       >
-        <img className={style.edit} src={edit}></img>
+        <img alt="Edit" className={style.edit} src={edit}></img>
       </button>
 
       <button
         className={props.show ? `${style.button} ${style.show}` : style.button}
         onClick={onDelete}
       >
-        <img className={style.edit} src={trash}></img>
+        <img alt="Trash" className={style.edit} src={trash}></img>
       </button>
     </>
   );

@@ -9,6 +9,7 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  getDoc,
 } from "firebase/firestore";
 
 import { IfcNote } from "../types/interfaces";
@@ -22,22 +23,17 @@ interface NewNote {
 
 /**
  * Creates a new note in the db
- *
- * @param uid users id
- * @param folder notes folder
+ * @param path path to object
  * @param note note data
- * @returns firebase document
+ * @returns 
  */
-const createNote = async (uid: string, folder: string, note: NewNote) => {
+const createNote = async (path: string, note: NewNote) => {
   const { name, content = "" } = note;
-  const doc = await addDoc(
-    collection(db, `notes/${uid}/folders/${folder}/notes`),
-    {
-      name,
-      content,
-      timestamp: serverTimestamp(),
-    }
-  );
+  const doc = await addDoc(collection(db, path), {
+    name,
+    content,
+    timestamp: serverTimestamp(),
+  });
 
   return doc;
 };
@@ -47,14 +43,8 @@ interface UpdateNote {
   content?: string;
 }
 
-
 // @TODO fix
-const updateNote = async (
-  uid: string,
-  folder: string,
-  id: string,
-  note: UpdateNote
-) => {
+const updateNote = async (path: string, note: UpdateNote) => {
   let data: any = {};
 
   if (note.name) {
@@ -65,37 +55,27 @@ const updateNote = async (
     data.content = note.content;
   }
 
-  return await updateDoc(
-    doc(db, `/notes/${uid}/folders/${folder}/notes/${id}`),
-    data
-  );
+  return await updateDoc(doc(db, path), data);
 };
 
 /**
  * Deletes a note by id
- * @param uid user id
- * @param folder folder id
+ * @param path path to object
  * @param id note id
- * @returns 
+ * @returns
  */
-const deletNote = async (uid: string, folder: string, id: string) => {
-  return await deleteDoc(doc(db, `notes/${uid}/folders/${folder}/notes/${id}`));
+const deleteNote = async (path: string) => {
+  return await deleteDoc(doc(db, path));
 };
 
 /**
  * Returns all notes in folder
- * @param uid user id
- * @param folder folder id
+ * @param path path to object
  * @returns Notes
  */
-const getNotes = async (uid: string, folder: string) => {
+const getNotes = async (path: string) => {
   const notes: Array<IfcNote> = [];
-  const docs = await getDocs(
-    query(
-      collection(db, `notes/${uid}/folders/${folder}/notes`),
-      orderBy("timestamp")
-    )
-  );
+  const docs = await getDocs(query(collection(db, path), orderBy("timestamp")));
 
   docs.forEach((doc) => {
     const { name, timestamp, content } = doc.data();
@@ -111,18 +91,27 @@ const getNotes = async (uid: string, folder: string) => {
 };
 
 /**
- * Subscribes to notes changes
- * @param uid user id
- * @param folder folder id
- * @param cb callback function
+ * Retuns a single not
+ * @param path 
  * @returns 
  */
-const subscribeNotes = (uid: string, folder: string, cb: Function) => {
+const getNote = async (path: string) => {
+  const note = await getDoc(doc(db, path));
+
+  const data = note.data();
+
+  return data as IfcNote;
+};
+
+/**
+ * Subscribes to notes changes
+ * @param path path to object
+ * @param cb callback function
+ * @returns
+ */
+const subscribeNotes = (path: string, cb: Function) => {
   return onSnapshot(
-    query(
-      collection(db, `notes/${uid}/folders/${folder}/notes`),
-      orderBy("timestamp")
-    ),
+    query(collection(db, path), orderBy("timestamp")),
     (docs) => {
       const notes: Array<IfcNote> = [];
 
@@ -141,4 +130,4 @@ const subscribeNotes = (uid: string, folder: string, cb: Function) => {
   );
 };
 
-export { createNote, updateNote, deletNote, getNotes, subscribeNotes };
+export { createNote, updateNote, deleteNote, getNotes, getNote, subscribeNotes };

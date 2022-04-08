@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { updateDoc, getDoc, doc } from "firebase/firestore";
+import React, { useContext, useState, useEffect, useMemo } from "react";
+import { useParams, Params } from "react-router-dom";
 import debounce from 'lodash.debounce';
 
 // Components
@@ -10,56 +9,49 @@ import Editor from "../../components/editor";
 
 // Services
 import UserContext from "../../services/user";
-import { db } from "../../services/firebase";
+import { getNote, updateNote } from "../../services/notes";
+import { IfcUser } from "../../types/interfaces";
 
 // Styles
 import style from "./style.module.css";
 
+interface IfcQueryParam extends Params {
+  folder: string;
+  note: string;
+}
+
 function Edit() {
-  // TODO: use reducer
-  const params = useParams();
-  const user = useContext(UserContext);
+  // @TODO use reducer
+  const { folder, note } = useParams() as IfcQueryParam;
+  const user = useContext(UserContext) as IfcUser;
+
+  // State
   const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
 
-  useEffect(() => {
-    // Load note doc
-    const loadNote = async () => {
-      const { uid } = { ...user };
-      const note = await getDoc(
-        doc(db, `/notes/${uid}/folders/${params.folder}/notes/${params.note}`)
-      );
+  useEffect(() => {    
+    getNote(`/notes/${user.uid}/folders/${folder}/notes/${note}`)
+      .then(note => setContent(note.content));
+  }, [user.uid, folder, note]);
 
-      const data = note.data();
+  const save = useMemo(
+    () => (content: string) => {
+      updateNote(`/notes/${user.uid}/folders/${folder}/notes/${note}`, { content })
+      .then(() => {
+        setSaved(true);
 
-      if (!data) return;
+        setTimeout(() => {
+          setSaved(false);
+        }, 2000);
+      });
+    },
+    [folder, note, user.uid]
+  )
 
-      setContent(data.content);
-    };
-
-    // Note note
-    loadNote();
-  }, []);
-
-  // Save note to db
-  const save = (value: string) => {
-    const { uid } = { ...user };
-    updateDoc(
-      doc(db, `/notes/${uid}/folders/${params.folder}/notes/${params.note}`),
-      { content: value }
-    );
-
-    setSaved(true);
-
-    setTimeout(() => {
-      setSaved(false);
-    }, 2000);
-  };
-
-  const debounceSave = useCallback(
-    debounce((value) => save(value), 500),
-    []
+  const debounceSave = useMemo(
+    () => debounce((value) => save(value), 500),
+    [save]
   );
 
   const togglePreview = () => {
