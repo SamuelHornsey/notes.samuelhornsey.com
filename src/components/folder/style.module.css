@@ -1,0 +1,20 @@
+.folder {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  margin: 28px 0px;
+}
+
+.name {
+  text-decoration: none;
+  color: #000000;
+  background: none;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  font-family: "Roboto Mono";
+  cursor: pointer;
+}

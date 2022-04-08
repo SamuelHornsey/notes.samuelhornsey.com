@@ -1,0 +1,20 @@
+.note {
+  margin: 28px 0px;
+}
+
+.link {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #000000;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: 'Roboto Mono', monospace;
+  padding: 0px;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: rgb(121, 0, 177);
+}

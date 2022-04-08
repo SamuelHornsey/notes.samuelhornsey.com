@@ -1,0 +1,19 @@
+.textarea {
+  border: 1px solid #989898;
+  box-sizing: border-box;
+  width: 1000px;
+  min-height: 780px;
+  margin: 0px 4px;
+  padding: 35px;
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #000000;
+}
+
+.textarea::placeholder {
+  font-style: italic;
+  color: #7b7b7b;
+}

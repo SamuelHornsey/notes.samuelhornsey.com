@@ -1,0 +1,50 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+  border: 7px solid #000000;
+  box-sizing: border-box;
+  padding: 80px 220px;
+}
+
+.title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 63px;
+  color: #000000;
+  width: 325px;
+  text-align: left;
+  margin: 0px;
+  margin-bottom: 33px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  color: #b76fff;
+  margin: 0px;
+  margin-top: 44px;
+  animation: color-change .8s infinite;
+}
+
+@keyframes color-change {
+  0% { color: red; }
+  20% { color: blue; }
+  40% { color: green }
+  60% { color: purple; }
+  80% { color: yellow; }
+  100% { color: orange; }
+}
+
+.bold {
+  font-weight: 700;
+}
