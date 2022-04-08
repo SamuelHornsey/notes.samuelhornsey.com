@@ -40,9 +40,9 @@ export default function Nav() {
           </a>
         </li>
         <li className={style.element}>
-          <a className={style.link} onClick={logout} href="#">
+          <button className={style.button} onClick={logout}>
             LEAVE!(logoff)
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
