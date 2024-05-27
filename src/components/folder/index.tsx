@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 // Components
-import Notes from "../notes";
 import Controls from "../controls";
 
 // Styles
@@ -9,13 +8,14 @@ import style from "./style.module.css";
 
 // Props types
 interface Props {
-  uuid: string;
+  folderId: string;
   index: number;
   name: string;
   open: boolean;
-  onClick: Function;
-  deleteFolder: Function;
-  editFolder: Function;
+  handleClick: Function;
+  handleDelete: Function;
+  handleEdit: Function;
+  notes: React.ReactNode;
 }
 
 export default function Folder(props: Props) {
@@ -23,7 +23,7 @@ export default function Folder(props: Props) {
 
   // Run on click handler
   const toggle = (e: React.MouseEvent) => {
-    props.onClick(props.index);
+    props.handleClick(props.index);
   };
 
   const onEnter = () => {
@@ -35,11 +35,11 @@ export default function Folder(props: Props) {
   };
 
   const onDelete = () => {
-    props.deleteFolder(props.uuid);
+    props.handleDelete(props.folderId);
   };
 
   const onEdit = () => {
-    props.editFolder(props.index);
+    props.handleEdit(props.index);
   };
 
   return (
@@ -51,7 +51,7 @@ export default function Folder(props: Props) {
         <Controls show={hover} onDelete={onDelete} onEdit={onEdit} />
       </div>
 
-      {props.open ? <Notes folder={props.uuid} /> : null}
+      {props.open ? props.notes : null}
     </div>
   );
 }

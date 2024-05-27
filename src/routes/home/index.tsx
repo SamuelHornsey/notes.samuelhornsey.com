@@ -1,39 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 
 // Components
-import Modal from "../../components/modal";
 import Header from "../../components/header";
 import Folders from "../../components/folders";
 
 // Services
-import { IfcUser } from "../../types/interfaces";
-import UserContext from "../../services/user";
-import { createFolder } from "../../services/folders";
+import ModalContext from "../../context/modal";
 
 // Styles
 import style from "./style.module.css";
 
 function Home() {
-  const user = useContext(UserContext) as IfcUser;
-  const [modal, setModal] = useState<boolean>(false);
-
-  const toggle = () => {
-    setModal(!modal);
-  };
-
-  const onSubmit = (name: string) => {
-    createFolder(`notes/${user.uid}/folders/`, { name })
-      .then(() => setModal(false));
-  };
+  const [modal, setModal] = useState<React.ReactNode | null>(null);
 
   return (
-    <div className={style.home}>
-      <div className={style.container}>
-        {modal ? <Modal toggle={toggle} onSubmit={onSubmit} /> : null}
-        <Header onNew={toggle} />
-        <Folders />
+    <ModalContext.Provider value={{ modal, setModal }}>
+      <div className={style.home}>
+        <div className={style.container}>
+          {modal ? modal : null}
+          <Header />
+          <Folders />
+        </div>
       </div>
-    </div>
+    </ModalContext.Provider>
   );
 }
 

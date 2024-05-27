@@ -1,5 +1,5 @@
 export interface IfcFolder {
-  uuid: string;
+  folderId: string;
   name: string;
   timestamp: string;
 }
