@@ -1,21 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
 
 // Components
+import Notes from "../notes";
 import InputEdit from "../input-edit";
 import Folder from "../folder";
+import WarningModal from "../warning-modal";
 
 // Types
 import { IfcFolder, IfcUser } from "../../types/interfaces";
 
 // Services
 import UserContext from "../../services/user";
-import { subscribeFolders, deleteFolder, updateFolder } from "../../services/folders";
+import ModalContext from "../../context/modal";
+import {
+  subscribeFolders,
+  deleteFolder,
+  updateFolder,
+} from "../../services/folders";
 
 // Styles
 import style from "./style.module.css";
 
 export default function Folders() {
   const user = useContext(UserContext) as IfcUser;
+  const { setModal } = useContext(ModalContext);
   const [folders, setFolders] = useState<Array<IfcFolder>>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [index, setIndex] = useState<number | null>();
@@ -44,15 +52,29 @@ export default function Folders() {
     setIndex(index);
   };
 
+  const confirmDelete = (id: string) => {
+    deleteFolder(`notes/${user.uid}/folders/${id}`).then(() => setModal(null));
+  };
+
+  const cancelDelete = () => {
+    setModal(null);
+  };
+
   const onDelete = (id: string) => {
-    deleteFolder(`notes/${user.uid}/folders/${id}`);
+    setModal(
+      <WarningModal
+        handleConfirm={() => confirmDelete(id)}
+        handleCancel={() => cancelDelete()}
+      />
+    );
   };
 
   const onUpdate = (name: string) => {
     if (!index) return;
 
-    updateFolder(`notes/${user.uid}/folders/${folders[index].uuid}`, { name })
-      .then(() => setIndex(null));
+    updateFolder(`notes/${user.uid}/folders/${folders[index].folderId}`, {
+      name,
+    }).then(() => setIndex(null));
   };
 
   return (
@@ -63,14 +85,15 @@ export default function Folders() {
             <InputEdit key={i} onSubmit={onUpdate} value={folder.name} />
           ) : (
             <Folder
-              uuid={folder.uuid}
+              folderId={folder.folderId}
               index={i}
               key={i}
               name={folder.name}
               open={open === i ? true : false}
-              onClick={toggle}
-              deleteFolder={onDelete}
-              editFolder={onEdit}
+              handleClick={toggle}
+              handleDelete={onDelete}
+              handleEdit={onEdit}
+              notes={<Notes folder={folder.folderId} />}
             />
           )
         )

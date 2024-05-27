@@ -1,0 +1,21 @@
+.input {
+  border: 1px solid #bbbbbb;
+  box-sizing: border-box;
+  font-family: "Roboto Mono";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 21px;
+  color: black;
+  padding: 26px 18px;
+  width: 590px;
+}
+
+.input::placeholder {
+  color: #7b7b7b;
+  font-style: italic;
+}
+
+.buttons {
+  margin-top: 25px;
+}

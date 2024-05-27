@@ -47,7 +47,7 @@ const subscribeFolders = (path: string, cb: Function) => {
       docs.forEach((doc) => {
         const { name, timestamp } = doc.data();
         folders.push({
-          uuid: doc.id,
+          folderId: doc.id,
           timestamp,
           name,
         });
