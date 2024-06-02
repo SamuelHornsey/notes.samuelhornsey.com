@@ -18,3 +18,7 @@
   font-family: "Roboto Mono";
   cursor: pointer;
 }
+
+.name:hover {
+  color: #0000EE;
+}

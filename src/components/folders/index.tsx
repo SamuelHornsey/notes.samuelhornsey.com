@@ -26,7 +26,7 @@ export default function Folders() {
   const { setModal } = useContext(ModalContext);
   const [folders, setFolders] = useState<Array<IfcFolder>>([]);
   const [open, setOpen] = useState<number | null>(null);
-  const [index, setIndex] = useState<number | null>();
+  const [index, setIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const unsubscribe = subscribeFolders(
@@ -70,7 +70,7 @@ export default function Folders() {
   };
 
   const onUpdate = (name: string) => {
-    if (!index) return;
+    if (index === null) return;
 
     updateFolder(`notes/${user.uid}/folders/${folders[index].folderId}`, {
       name,
